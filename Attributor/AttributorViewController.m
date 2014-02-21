@@ -7,14 +7,25 @@
 //
 
 #import "AttributorViewController.h"
+#import "TextStatsViewController.h"
 
 @interface AttributorViewController ()
 @property (weak, nonatomic) IBOutlet UITextView *body;
-@property (weak, nonatomic) IBOutlet UILabel *headline;
 @property (weak, nonatomic) IBOutlet UIButton *outlineButton;
 @end
 
 @implementation AttributorViewController
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"Analyze Text"]){
+        if ([segue.destinationViewController isKindOfClass:[TextStatsViewController class]]) {
+            TextStatsViewController *tsvc = (TextStatsViewController *)segue
+            .destinationViewController;
+            tsvc.textToAnalyze = self.body.textStorage;
+        }
+    }
+}
 
 - (void)viewDidLoad
 {
@@ -54,7 +65,6 @@
 
 - (void)usePreferedFonts {
     self.body.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
-    self.headline.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
 }
 
 - (IBAction)changeBodySelectionColorToMatchBackgroundOfButton:(UIButton *)sender
@@ -70,6 +80,13 @@
                                   value:[UIColor blueColor]
                                   range:self.body.selectedRange];
 }
+
+- (IBAction)userSwipeLeft:(UISwipeGestureRecognizer *)sender {
+    [self.body.textStorage addAttribute:NSForegroundColorAttributeName
+                                  value:[UIColor blackColor]
+                                  range:self.body.selectedRange];
+}
+
 
 - (IBAction)outlineBodySelection
 {
